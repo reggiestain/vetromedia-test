@@ -1,0 +1,97 @@
+.form .error-message {
+  display: block;
+  padding: 0.375rem 0.5625rem 0.5625rem;
+  margin-top: -1px;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  font-weight: normal;
+  font-style: italic;
+  color: red;rgba(0, 0, 0, 0.54);
+}
+
+.error label,
+.error label.error {
+  color: #C3232D;
+}
+
+div.message {
+  border-style: solid;
+  border-width: 1px;
+  display: block;
+  font-weight: normal;
+  position: relative;
+  padding: 0.875rem 1.5rem 0.875rem 20%;
+  transition: opacity 300ms ease-out 0s;
+  background-color: #74becc;
+  border-color: #74becc;
+  color: #626262;
+}
+
+div.message.error {
+  background-color: #C3232D;
+  border-color: #C3232D;
+  color: #FFF;
+}
+
+div.message.error:before {
+  padding: 11px 16px 14px 7px;
+  color: #C3232D;
+  content: "x";
+}
+/** Notices and Errors **/
+.cake-error,
+.cake-debug,
+.notice,
+p.error,
+p.notice {
+  display: block;
+  clear: both;
+  background-repeat: repeat-x;
+  margin-bottom: 18px;
+  padding: 7px 14px;
+  border-radius: 3px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.24);
+}
+
+.cake-debug,
+.notice,
+p.notice {
+  color: #000000;
+  background: #ffcc00;
+}
+
+.cake-error,
+p.error {
+  color: #fff;
+  background: #C3232D;
+}
+
+.cake-error .cake-stack-trace {
+  margin-top:10px;
+}
+
+.cake-stack-trace code {
+  background: inherit;
+  border:0;
+}
+
+.cake-code-dump .code-highlight {
+  display: block;
+  background-color: #FFC600;
+}
+
+.cake-error a,
+.cake-error a:hover {
+  color:#fff;
+  text-decoration: underline;
+}
+.start{
+    background-color: #547A91;
+}
+
+.navbar-header{
+    background-image: url(../img/safer_schools_logo.jpg);  
+    background-attachment: fixed;
+
+}
+
