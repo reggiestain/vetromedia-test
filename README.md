@@ -1,26 +1,25 @@
-# CakePHP Application Skeleton
+# Currency Conversion Application
 
-[![Build Status](https://img.shields.io/travis/cakephp/app/master.svg?style=flat-square)](https://travis-ci.org/cakephp/app)
-[![License](https://img.shields.io/packagist/l/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
-
-A skeleton for creating applications with [CakePHP](http://cakephp.org) 3.x.
+This application was developed with [CakePHP](http://cakephp.org) 3.x.
 
 The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
 
 ## Installation
 
-1. Download [Composer](http://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
-
-If Composer is installed globally, run
-```bash
-composer create-project --prefer-dist cakephp/app [app_name]
-```
-
-You should now be able to visit the path to where you installed the app and see
-the setup traffic lights.
+1. Clone or download this application into the "www" directory on your apache server.
+2. The Currency Converter chat application database file is located in "config/schema/currencyconverter.sql" directory of the project folder 
+3. Run this sql script on your mysql server to create the "currencyconverter" database.
 
 ## Configuration
 
 Read and edit `config/app.php` and setup the 'Datasources' and any other
 configuration relevant for your application.
+
+You are now set to go.
+
+Run the Currency Converter application on your web server and login with the details below:
+
+Email: reggiestain@gmail.com
+Password: 123456
+
+
