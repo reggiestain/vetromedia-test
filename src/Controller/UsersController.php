@@ -147,7 +147,7 @@ class UsersController extends AppController {
                 $this->set(['surPerc' => $surPerc, 'currency' => $fromCurrency, 'surCharge' => $surCharge, 'amountTopay' => $amountTopay, 'ZarAmountForeign' => $value, 'rate' => $rate, 'surCharge' => $surCharge, 'Foreignamount' => $amount, '_serialize' =>
                     ['amountTopay','currency', 'AmountForeign', 'rate', 'surPerc', 'amountTopay', 'Foreignamount', 'surCharge', 'ZarAmountForeign']]);
             } else {
-                render('unmatched');
+                $this->render('unmatched');
             }
             $this->viewBuilder()->layout(false);
         }
