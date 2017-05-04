@@ -25,13 +25,14 @@ use Cake\Routing\Router;
     <div class="form-group col-md-12"> 
         <div class="input-group">
             <span class="input-group-addon">ZAR</span>
-            <input type="text" name="amount_to_pay" value="<?php echo number_format((double)$ZarAmountForeign, 2, '.','');?>" class="form-control" readonly>           
+            <input type="text" name="amount_to_pay" value="<?php echo number_format((double)$amountTopay, 2, '.','');?>" class="form-control" readonly>           
         </div>
         <input type="hidden" name="exchange_rate" value="<?php echo $rate;?>">
         <input type="hidden" name="amount_of_surcharge" value="<?php echo number_format((double)$surCharge, 2, '.','');?>">
         <input type="hidden" name="surcharge_percentage" value="<?php echo $surPerc;?>">
         <input type="hidden" name="amount_of_foreign_currency" value="<?php echo number_format((double)$Foreignamount, 2, '.','');?>">
         <input type="hidden" name="foreign_currency_purchased" value="<?php echo $currency;?>">
+        <input type="hidden" name="exchange_amount" value="<?php echo number_format((double)$ZarAmountForeign, 2, '.','');?>">
     </div>
 </div>                        
 <?php echo $this->Form->end();?>

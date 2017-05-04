@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 04, 2017 at 08:22 AM
+-- Generation Time: May 04, 2017 at 04:37 PM
 -- Server version: 5.7.14
 -- PHP Version: 5.6.25
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `currency_converter`
+-- Database: `vetro_media`
 --
 
 -- --------------------------------------------------------
@@ -53,10 +53,10 @@ CREATE TABLE `currency` (
 --
 
 INSERT INTO `currency` (`id`, `name`, `code`, `rate`, `surcharge`, `created`) VALUES
-(17, 'US Dollars', 'USD', 0.0808279, 7.5, '2017-05-02 15:22:41'),
-(18, 'British Pound', 'GBP', 0.0527032, 5, '2017-05-02 15:24:06'),
-(19, 'Euro', 'EUR', 0.071871, 5, '2017-05-02 15:26:03'),
-(20, 'Kenyan Shilling', 'KES', 7.81498, 2.5, '2017-05-02 15:26:59');
+(17, 'US Dollars', 'USD', 13.6242, 7.5, '2017-05-02 15:22:41'),
+(18, 'British Pound', 'GBP', 17.6001, 5, '2017-05-02 15:24:06'),
+(19, 'Euro', 'EUR', 14.9498, 5, '2017-05-02 15:26:03'),
+(20, 'Kenyan Shilling', 'KES', 0.1323, 2.5, '2017-05-02 15:26:59');
 
 -- --------------------------------------------------------
 
@@ -68,6 +68,7 @@ CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `exchange_rate` float NOT NULL,
+  `exchange_amount` float NOT NULL,
   `foreign_currency_purchased` varchar(10) NOT NULL,
   `surcharge_percentage` varchar(10) NOT NULL,
   `amount_to_pay` float NOT NULL,
@@ -129,7 +130,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `audit_logs`
 --
 ALTER TABLE `audit_logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
 --
 -- AUTO_INCREMENT for table `currency`
 --
@@ -139,12 +140,12 @@ ALTER TABLE `currency`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

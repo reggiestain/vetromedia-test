@@ -7,7 +7,7 @@ The framework source code can be found here: [cakephp/cakephp](https://github.co
 ## Installation
 
 1. Clone or download this application into the "www" directory on your apache server.
-2. The Vetro Media Practical Test database file is located in "config/schema/currencyconverter.sql" directory of the project folder 
+2. The Vetro Media Practical Test database file is located in "config/schema/vetro_media.sql" directory of the project folder 
 3. Run this sql script on your mysql server to create the "currency_converter" database.
 
 ## Configuration

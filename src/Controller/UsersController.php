@@ -114,17 +114,17 @@ class UsersController extends AppController {
         $this->set('currencies', $currencies);
         $this->set('title', 'Currency Conversion');
     }
-    
+
     public function updaterates() {
         $currs = $this->CurrencyTable->find('all');
         foreach ($currs as $curr) {
-                 $curr->rate = $this->fetchRate($curr->code, 'ZAR'); 
-                 $this->CurrencyTable->save($curr);
-        }  
+            $curr->rate = $this->fetchRate($curr->code, 'ZAR');
+            $this->CurrencyTable->save($curr);
+        }
         $this->Flash->success(__('Currency rate has been updated successfully.'));
-       return $this->redirect(['action' => 'index']);
+        return $this->redirect(['action' => 'index']);
     }
-    
+
     public function conversionRate($fromCurrency, $toCurrency) {
         if ($this->request->is('ajax')) {
             $rate = $this->fetchRate($fromCurrency, $toCurrency);
@@ -137,25 +137,19 @@ class UsersController extends AppController {
 
     public function getRates($fromCurrency, $toCurrency, $amount) {
         if ($this->request->is('ajax')) {
-            $currs = $this->CurrencyTable->find()->select(['surcharge', 'code', 'rate']);
-            $rate = $this->fetchRate($fromCurrency, $toCurrency);
-            if (!empty($rate) and !$currs->isEmpty()) {
-                $value = (double) $rate * (double) $amount;
-                foreach ($currs as $curr) {
-                    if ($curr->code === $fromCurrency) {
-                        $surPerc = $curr->surcharge;
-                        $surCharge = ($surPerc / 100) * $value;
-                        $rate = $curr->rate;
-                        $amountTopay = $value + $surPerc;                        
-                        $this->set(['surPerc' => $surPerc, 'currency' => $fromCurrency, 'surCharge' => $surCharge, 'amountTopay' => $amountTopay, 'ZarAmountForeign' => $value, 'rate' => $rate, 'surCharge' => $surCharge, 'Foreignamount' => $amount, '_serialize' =>
-                                   ['currency', 'AmountForeign', 'rate', 'surPerc', 'amountTopay', 'Foreignamount', 'surCharge', 'ZarAmountForeign']]);
-                
-                     }
-                  }                
-            }else{
-              $this->render('emptyrate');  
-           }
-           $this->viewBuilder()->layout(false);
+            $currs = $this->CurrencyTable->find()->where(['code' => $fromCurrency])->select(['surcharge', 'code', 'rate'])->first();
+            if (!empty($currs)) {
+                $value = (double) $currs->rate * (double) $amount;
+                $surPerc = $currs->surcharge;
+                $surCharge = ($surPerc / 100) * $value;
+                $rate = $currs->rate;
+                $amountTopay = $value + $surPerc;
+                $this->set(['surPerc' => $surPerc, 'currency' => $fromCurrency, 'surCharge' => $surCharge, 'amountTopay' => $amountTopay, 'ZarAmountForeign' => $value, 'rate' => $rate, 'surCharge' => $surCharge, 'Foreignamount' => $amount, '_serialize' =>
+                    ['amountTopay','currency', 'AmountForeign', 'rate', 'surPerc', 'amountTopay', 'Foreignamount', 'surCharge', 'ZarAmountForeign']]);
+            } else {
+                render('unmatched');
+            }
+            $this->viewBuilder()->layout(false);
         }
     }
 
