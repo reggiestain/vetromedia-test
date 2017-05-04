@@ -115,6 +115,9 @@ use Cake\Network\Exception\NotFoundException;
                 type: "POST",
                 asyn: false,
                 data: formData,
+                beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRF-Token', '<?php echo $this->request->params['_csrfToken'];?>');
+                },
                 success: function (data, textStatus, jqXHR)
                 {
                    if (data === '200') {

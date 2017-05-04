@@ -39,7 +39,7 @@ class AppController extends Controller {
      * @return void
      */
     public function initialize() {
-
+        $this->loadComponent('Csrf');
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
         $this->loadComponent('Paginator');

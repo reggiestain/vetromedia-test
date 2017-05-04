@@ -98,7 +98,8 @@ use Cake\Network\Exception\NotFoundException;
                     url: "<?php echo \Cake\Routing\Router::Url('/users/get_rates/');?>" + fromcurrency + "/" + tocurrency + "/" + randvalue,
                     type: "POST",
                     async: false,
-                    beforeSend: function () {
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRF-Token', '<?php echo $this->request->params['_csrfToken'];?>');
                         $('.modal-title').html('');
                         $('.conversion').html("<button class='btn btn-lg btn-default'><span class='glyphicon glyphicon-refresh spinning'></span> Converting...</button>");
                     },
@@ -129,6 +130,9 @@ use Cake\Network\Exception\NotFoundException;
                 type: "POST",
                 asyn: false,
                 data: formData,
+                beforeSend: function (xhr) {
+                        xhr.setRequestHeader('X-CSRF-Token', '<?php echo $this->request->params['_csrfToken'];?>');
+                },        
                 success: function (data, textStatus, jqXHR)
                 {
                     $('.alert-info').html(data);

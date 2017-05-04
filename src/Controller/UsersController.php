@@ -45,14 +45,14 @@ class UsersController extends AppController {
 
     public function beforeFilter(\Cake\Event\Event $event) {
         parent::beforeFilter($event);
-        $this->Auth->allow(['login','register']);
+        $this->Auth->allow(['login', 'register']);
         $this->loadComponent('RequestHandler');
         $this->AuditLogsTable = TableRegistry::get('audit_logs');
         $this->UsersTable = TableRegistry::get('users');
         $this->CurrencyTable = TableRegistry::get('currency');
         $this->OrdersTable = TableRegistry::get('orders');
-        
-        $this->set('userEmail',$this->Auth->user('email'));
+
+        $this->set('userEmail', $this->Auth->user('email'));
     }
 
     public function login() {
@@ -74,7 +74,7 @@ class UsersController extends AppController {
         $this->set('user', $user);
         $this->set('title', 'Login');
     }
-    
+
     public function register() {
         if ($this->request->is('ajax')) {
             $user = $this->UsersTable->newEntity();
@@ -129,39 +129,43 @@ class UsersController extends AppController {
         if ($this->request->is('ajax')) {
             $currs = $this->CurrencyTable->find()->select(['surcharge', 'code', 'rate']);
             $rate = $this->fetchRate($fromCurrency, $toCurrency);
-            $value = (double) $rate * (double) $amount;
-            foreach ($currs as $curr) {
-                if ($curr->code === $fromCurrency) {
-                    $surPerc = $curr->surcharge;
-                    $surCharge = ($surPerc / 100) * $value;
-                    $rate = $curr->rate;
-                    $amountTopay = $value + $surPerc;
-                }
-            }
-
-            $this->set(['surPerc' => $surPerc, 'currency' => $fromCurrency, 'surCharge' => $surCharge, 'amountTopay' => $amountTopay, 'ZarAmountForeign' => $value, 'rate' => $rate, 'surCharge' => $surCharge, 'Foreignamount' => $amount, '_serialize' =>
-                ['currency', 'AmountForeign', 'rate', 'surPerc', 'amountTopay', 'Foreignamount', 'surCharge', 'ZarAmountForeign']]);
-            $this->viewBuilder()->layout(false);
+            if (!$rate == 0 || !$curr->isEmpty()) {
+                $value = (double) $rate * (double) $amount;
+                foreach ($currs as $curr) {
+                    if ($curr->code === $fromCurrency) {
+                        $surPerc = $curr->surcharge;
+                        $surCharge = ($surPerc / 100) * $value;
+                        $rate = $curr->rate;
+                        $amountTopay = $value + $surPerc;                        
+                        $this->set(['surPerc' => $surPerc, 'currency' => $fromCurrency, 'surCharge' => $surCharge, 'amountTopay' => $amountTopay, 'ZarAmountForeign' => $value, 'rate' => $rate, 'surCharge' => $surCharge, 'Foreignamount' => $amount, '_serialize' =>
+                                   ['currency', 'AmountForeign', 'rate', 'surPerc', 'amountTopay', 'Foreignamount', 'surCharge', 'ZarAmountForeign']]);
+                
+                     }
+                  }                
+            }else{
+              $this->render('emptyrate');  
+           }
+           $this->viewBuilder()->layout(false);
         }
     }
 
     public function sendmail($id) {
-            $order = $this->OrdersTable->get($id);
-            $DefaultEmail = new Email();
-            $DefaultEmail->viewVars(['id' => $id, 'topay' => $order->amount_to_pay, 'currency' => $order->foreign_currency_purchased, 'amount' => $order->amount_of_foreign_currency]);
-            $DefaultEmail->transport('default');
-            $DefaultEmail->template('orderdetails', 'orderdetails')
-                        ->emailFormat('html')
-                        ->from(['info@judahtips.org' => 'judahtips.org'])
-                        ->to($this->Auth->user('email'))
-                        ->subject('Order Details')
-                        ->send();
+        $order = $this->OrdersTable->get($id);
+        $DefaultEmail = new Email();
+        $DefaultEmail->viewVars(['id' => $id, 'topay' => $order->amount_to_pay, 'currency' => $order->foreign_currency_purchased, 'amount' => $order->amount_of_foreign_currency]);
+        $DefaultEmail->transport('default');
+        $DefaultEmail->template('orderdetails', 'orderdetails')
+                ->emailFormat('html')
+                ->from(['info@judahtips.org' => 'judahtips.org'])
+                ->to($this->Auth->user('email'))
+                ->subject('Order Details')
+                ->send();
     }
 
     private function discount($id) {
         $order = $this->OrdersTable->get($id);
         $discount = 2;
-        $newamount = $order->amount_to_pay - ($order->amount_to_pay * ($discount/100));
+        $newamount = $order->amount_to_pay - ($order->amount_to_pay * ($discount / 100));
         $order->amount_to_pay = $newamount;
         $this->OrdersTable->save($order);
     }
@@ -174,19 +178,19 @@ class UsersController extends AppController {
                 $order->user_id = $this->Auth->user('id');
                 $order = $this->OrdersTable->patchEntity($order, $this->request->data);
                 if ($this->OrdersTable->save($order)) {
-                    
+
                     switch ($currency) {
                         case "USD":
-                            
+
                             break;
                         case "GBP":
-                             $this->sendmail($order->id);
+                            $this->sendmail($order->id);
                             break;
                         case "EUR":
-                             $this->discount($order->id);
+                            $this->discount($order->id);
                             break;
                         case "KES":
-                            
+
                             break;
                     }
 
