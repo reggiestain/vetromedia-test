@@ -44,7 +44,7 @@ use Cake\Network\Exception\NotFoundException;
                                 <input type="text" name="foreign_exchange_amount" class="form-control" placeholder="Enter amount" id="f-value">
                             </div>
                             <div class="form-group col-md-2">
-                                <button type="button" class="btn btn-primary btn-lg convert">Convert</button>   
+                                <button type="button" class="btn btn-success btn-lg convert">Convert</button>   
                             </div>
                         </div>
                     </form>     

@@ -114,7 +114,17 @@ class UsersController extends AppController {
         $this->set('currencies', $currencies);
         $this->set('title', 'Currency Conversion');
     }
-
+    
+    public function updaterates() {
+        $currs = $this->CurrencyTable->find('all');
+        foreach ($currs as $curr) {
+                 $curr->rate = $this->fetchRate($curr->code, 'ZAR'); 
+                 $this->CurrencyTable->save($curr);
+        }  
+        $this->Flash->success(__('Currency rate has been updated successfully.'));
+       return $this->redirect(['action' => 'index']);
+    }
+    
     public function conversionRate($fromCurrency, $toCurrency) {
         if ($this->request->is('ajax')) {
             $rate = $this->fetchRate($fromCurrency, $toCurrency);
