@@ -129,7 +129,7 @@ class UsersController extends AppController {
         if ($this->request->is('ajax')) {
             $currs = $this->CurrencyTable->find()->select(['surcharge', 'code', 'rate']);
             $rate = $this->fetchRate($fromCurrency, $toCurrency);
-            if (!$rate == 0 || !$curr->isEmpty()) {
+            if (!empty($rate) and !$currs->isEmpty()) {
                 $value = (double) $rate * (double) $amount;
                 foreach ($currs as $curr) {
                     if ($curr->code === $fromCurrency) {

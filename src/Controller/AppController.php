@@ -89,7 +89,7 @@ class AppController extends Controller {
             $rate = $allData[1];
             
         }else{
-            $rate = 0;
+            $rate = '';
         }
         
       return $rate;
