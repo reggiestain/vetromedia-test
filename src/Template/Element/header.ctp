@@ -14,22 +14,26 @@
  */
 
 ?>
-<nav role="navigation" class="navbar navbar-default">
-        <!-- Brand and toggle get grouped for better mobile display -->
+
+<div id="top-nav" class="navbar navbar-inverse navbar-static-top">
+    <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
-                <span class="sr-only">Toggle navigation</span>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+            <a class="navbar-brand" href="#">Dashboard</a>
         </div>
-        <!-- Collection of nav links and other content for toggling -->
-        <div id="navbarCollapse" class="collapse navbar-collapse">
+        <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="<?php echo \Cake\Routing\Router::Url('/users/index');?>" style="color:#0088cc">Currency Conversion |</a></li>
-                <li class="active"><a href="<?php echo \Cake\Routing\Router::Url('/users/manage_currency');?>" style="color:#0088cc">Currency Management |</a></li>
-                <li><a href="<?php echo \Cake\Routing\Router::Url('/users/logout');?>">Logout</a></li>
+                <li><a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#"><i class="glyphicon glyphicon-user"></i> <?php echo $userEmail;?></a></li>
+                    
+                
+                <li><a href="<?php echo \Cake\Routing\Router::Url('/users/logout');?>"><i class="glyphicon glyphicon-lock"></i> Logout</a></li>
             </ul>
         </div>
-    </nav>
+    </div>
+    <!-- /container -->
+</div>
+<!-- /Header -->

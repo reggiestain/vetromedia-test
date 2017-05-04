@@ -15,13 +15,23 @@
  */
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\Debugger;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Routing\Router;
 ?>
 
-<?php 
-$rate = number_format((double)$value, 2, '.', '');
-echo $this->Form->input('to_amount',['label'=>false,'type'=>'text','class'=>'form-control','value'=>$rate,'id'=>'to']);
-?>
+<div class="row">
+    <div class="form-group col-md-12"> 
+        <div class="input-group">
+            <span class="input-group-addon">ZAR</span>
+            <input type="text" name="amount_to_pay" value="<?php echo number_format((double)$ZarAmountForeign, 2, '.','');?>" class="form-control" readonly>           
+        </div>
+        <input type="hidden" name="exchange_rate" value="<?php echo $rate;?>">
+        <input type="hidden" name="amount_of_surcharge" value="<?php echo number_format((double)$surCharge, 2, '.','');?>">
+        <input type="hidden" name="surcharge_percentage" value="<?php echo $surPerc;?>">
+        <input type="hidden" name="amount_of_foreign_currency" value="<?php echo number_format((double)$Foreignamount, 2, '.','');?>">
+        <input type="hidden" name="foreign_currency_purchased" value="<?php echo $currency;?>">
+    </div>
+</div>                        
+<?php echo $this->Form->end();?>

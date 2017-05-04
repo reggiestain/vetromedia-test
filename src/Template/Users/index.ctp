@@ -22,71 +22,125 @@ use Cake\Network\Exception\NotFoundException;
 ?>
 
 <div class="container">
- <?php echo $this->element('header');?>
-    
-    <h2>Currency Converter</h2>
-    <div>
+    <?php echo $this->element('header');?>
     <?php
     echo $this->Flash->render();
     echo $this->Flash->render('auth');     
-    ?>    
+    ?>   
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>Currency Converter</h4></div>
+                <div class="panel-body">
+                    <form>
+                        <div class="row">
+                            <div class="form-group col-md-6"> 
+                           <?php 
+                           echo $this->Form->select('from_country',$currencies, ['empty' =>'--Select Currency--','class'=>'form-control','id'=>'currency']);
+                           ?>
+                            </div>
+                            <div class="form-group col-md-4">            
+                                <input type="text" name="foreign_exchange_amount" class="form-control" placeholder="Enter amount" id="f-value">
+                            </div>
+                            <div class="form-group col-md-2">
+                                <button type="button" class="btn btn-primary btn-lg convert">Convert</button>   
+                            </div>
+                        </div>
+                    </form>     
+                </div>
+            </div>
+        </div>
+    </div> 
+    <!---Modal-->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-md">
+            <!-- Modal content-->
+        <?php echo $this->Form->create(null,['id'=>'p-form','url'=>['controller' => 'users', 'action' => 'purchase']]);?>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title"></h3>
+                </div>
+                <div class="modal-body">
+                    <div> 
+                        <p class="alert-info"></p>    
+                        <input type="hidden" name="from_currency" value="" class="form-control">  
+                        <input type="hidden" name="foreign_exchange_amount" value="" class="form-control">
+                    </div>
+                    <div class="conversion">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="submit" id="bottom-text" class="btn btn-success">Purchase</button>     
+                </div>
+            </div>
+        <?php echo $this->Form->end();?>
+        </div> 
     </div>
-    <br>
-    <form class="form-inline" style="margin-top: 50px">
-        <div class="row" style="margin-left: 20px">
-        <div class="form-group"> 
-            <label>From: </label>
-            <?php 
-            echo $this->Form->select('from_country',$currencies, ['empty' =>'--Select Currency--','class'=>'form-control','id'=>'from-value']);
-            ?>
-        </div>
-        <div class="form-group">            
-            <input type="number" name="from_amount" class="form-control" min="1" id="from">
-        </div>
-        </div>
-        <br>
-        <div class="row" style="margin-left: 38px">
-        <div class="form-group"> 
-            <label>To: </label>
-            <?php 
-            echo $this->Form->select('to_country', $currencies, ['empty' =>'--Select Currency--','class'=>'form-control','id'=>'to-value']);
-            ?>
-        </div>
-        <div class="form-group" id="rate">            
-            <input type="text" name="to_amount" class="form-control" id="to">
-        </div>
-        </div>
-    </form>
 </div>
+
 <script>
-$(document).ready(function(){
-    
-    var from = $('#from');
-    
-     from.on('keyup', function(){         
-         if(!$('#from-value').val() == '' && !$('#to-value').val() == ''){
-            $('#to').val('converting.....');
-            var fromvalue = $('#from-value').val();
-            var tovalue = $('#to-value').val();
-            var amount = $('#from').val();
-            if(amount == ''){
-               amount = 0; 
+    $(document).ready(function () {
+        
+        $(document).on('click', '.convert', function (event) {
+            event.preventDefault();
+            var tocurrency = 'ZAR';
+            var fromcurrency = $('#currency').val();
+            var randvalue = parseFloat($('#f-value').val()).toFixed(2);
+            if (!fromcurrency == '' && !tocurrency == '') {
+                $('input[name=from_currency]').val(fromcurrency);
+                $('input[name=foreign_exchange_amount]').val(randvalue);
+                $('#myModal').modal();
+                $.ajax({
+                    url: "<?php echo \Cake\Routing\Router::Url('/users/get_rates/');?>" + fromcurrency + "/" + tocurrency + "/" + randvalue,
+                    type: "POST",
+                    async: false,
+                    beforeSend: function () {
+                        $('.modal-title').html('');
+                        $('.conversion').html("<button class='btn btn-lg btn-default'><span class='glyphicon glyphicon-refresh spinning'></span> Converting...</button>");
+                    },
+                    success: function (data) {
+                        $('.modal-title').html('Amount to be paid in South African Rands');
+                        $('.conversion').html(data);
+                    },
+                    error: function (xhr, textStatus, error) {
+                        alert('An error occure please try again.');
+                    }
+                });
+            } else {
+                alert('Please select currency');
             }
+        });
+
+        $('#f-value').keypress(function (e) {
+             var verified = (e.which == 8 || e.which == undefined || e.which == 0) ? null : String.fromCharCode(e.which).match(/[^0-9]/);
+            if (verified) {e.preventDefault();}
+        });
+
+        $(document).on('submit', '#p-form', function (event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
+            var url = $(this).attr("action");
             $.ajax({
-                type:"POST",
-                url:"<?php echo \Cake\Routing\Router::Url('/users/get_rates/');?>"+fromvalue+"/"+tovalue+"/"+amount,
-                dataType: 'text',
-                async:false,
-                success: function(data){
-                    $('#rate').html(data);
+                url: url,
+                type: "POST",
+                asyn: false,
+                data: formData,
+                success: function (data, textStatus, jqXHR)
+                {
+                    $('.alert-info').html(data);
+                    setTimeout(function () {
+                       window.location.reload(1);
+                    }, 5000);
                 },
-                error: function (xhr,textStatus,error) {
-                    alert('An error occure please try again.');
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(errorThrown);
+                    location.reload();
                 }
             });
-          }else{
-          alert('Please select currency');
-          }
-    });   
-});
+        });
+    });
 </script>

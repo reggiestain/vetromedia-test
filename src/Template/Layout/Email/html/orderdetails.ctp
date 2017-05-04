@@ -12,26 +12,13 @@
  * @since         0.10.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 ?>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
-    <?php echo $this->Html->charset();?>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-    <?php echo $title;?>
-    </title>
-    <?php echo $this->Html->meta('icon');?>   
-    <?php echo $this->Html->css('bootstrap.min.css');?>
-    <?php echo $this->Html->css('font-awesome.min.css');?>
-    <?php echo $this->Html->css('cake-style.css');?>  
-    <?php echo $this->Html->css('style.css');?>
-    <?php echo $this->Html->script('jquery.min');?> 
-    <?php echo $this->Html->script('bootstrap.min');?> 
+<?php echo $this->Html->css('bootstrap.min.css') ?>
 </head>
 <body>
-<?php echo $this->fetch('content') ?>
-   
+<?php echo $this->fetch('content') ;?>
 </body>
 </html>

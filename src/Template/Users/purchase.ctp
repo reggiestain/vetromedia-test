@@ -15,29 +15,13 @@
  */
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\Debugger;
 use Cake\Network\Exception\NotFoundException;
-?>
 
-   <h2>Currency List</h2> 
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-        <th>Currency Name</th>
-        <th>Currency Code</th>
-        <th>Currency Rate</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($currencyList as $currency): ?>
-        <tr>
-        <td><?php echo $currency->name;?></td>
-        <td><?php echo $currency->code;?></td>
-        <td><?php echo $currency->rate;?></td>
-        </tr>
-        <?php endforeach;?>   
-        </tbody>
-    </table>
-   
+
+if($status === '200'){
+   echo "<div class='alert alert-success'><strong>Success! </strong> Order was saved successfully.</div>";   
+} else if($status === 'error'){
+   echo "<div class='alert alert-danger'><strong>Error! </strong> An error occured, please try again. </div>";  
+}

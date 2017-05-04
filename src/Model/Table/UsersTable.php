@@ -38,15 +38,52 @@ class UsersTable extends Table {
     }
 
     public function validationDefault(Validator $validator) {
-
-        $validator->add('email', 'valid-email', ['rule' => 'email'])
-                ->add('password', [
-        'length' => [
-            'rule' => ['minLength', 6],
-            'message' => 'Password need to be at least 6 characters long',
-        ]
-        ]);
-
+        $validator->notEmpty('firstname', 'First name is required.')
+                ->notEmpty('surname', 'Surname is required.')                
+                ->notEmpty('mobile', 'Mobile number is required.')                
+                ->add('email', 'validFormat', [
+                    'rule' => 'email',
+                    'message' => 'E-mail must be a valid email address.'
+                ])
+                ->add('email', ['unique' => [
+                        'rule' => 'validateUnique',
+                        'provider' => 'table',
+                        'message' => 'This email already exist.']
+                        ]
+                )
+                ->add('mobile', 'notEmpty', [
+                    'rule' => ['custom', '/^([0-9]{1}[0-9]{9})$/'],
+                    'message' => __('Invalid mobile number! mobile number format: eg 0755434434')
+                ])
+                ->add('mobile', ['unique' => [
+                        'rule' => 'validateUnique',
+                        'provider' => 'table',
+                        'message' => 'This mobile number already exist.']
+                        ]
+                )->add('password', [
+                    'minLength' => [
+                        'rule' => ['minLength', 6],
+                        'message' => 'Password must contain at least 6 character'
+                    ],]
+                );
+        
+        $validator
+            ->requirePresence('confirm_password', 'create', 'Password must be required!')
+            ->notEmpty('confirm_password', 'Confirm password must be required!')
+            ->add(
+                'confirm_password',
+                'custom',
+                [
+                    'rule' => function ($value, $context) {
+                            if (isset($context['data']['password']) && $value == $context['data']['password']) {
+                                return true;
+                            }
+                            return false;
+                        },
+                    'message' => 'Sorry, password and confirm password does not matched'
+                ]
+            );   
+       
         return $validator;
     }
 
