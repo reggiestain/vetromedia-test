@@ -1,5 +1,4 @@
-/nbproject/*
-/vendor/*
-/config/app.php
-/tmp/*
-/logs/*
+nbproject/*
+config/app.php
+tmp/*
+logs/*
