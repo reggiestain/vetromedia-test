@@ -230,7 +230,7 @@ return [
             //'port' => 'non_standard_port_number',
             'username' => 'root',
             'password' => '',
-            'database' => 'vetro_media',
+            'database' => 'siyahka_test_db',
             'encoding' => 'utf8',
             'timezone' => '',
             'flags' => [],

@@ -61,7 +61,18 @@ class AppController extends Controller {
                 ]
         ]);
     }
-
+    
+    /**
+     * 
+     * @param Event $event
+     */
+    public function beforeFilter(\Cake\Event\Event $event) {
+        $this->loadModel('AuditLogs');
+        $this->loadModel('Users');
+        $this->loadModel('Currency');
+        $this->loadModel('Orders');
+    }
+    
     /**
      * Before render callback.
      *

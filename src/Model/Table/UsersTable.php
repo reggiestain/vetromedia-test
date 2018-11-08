@@ -40,7 +40,9 @@ class UsersTable extends Table {
     public function validationDefault(Validator $validator) {
         $validator->notEmpty('firstname', 'First name is required.')
                 ->notEmpty('surname', 'Surname is required.')                
-                ->notEmpty('mobile', 'Mobile number is required.')                
+                ->notEmpty('mobile', 'Mobile number is required.') 
+                ->notEmpty('email', 'Email is required.')
+                 ->notEmpty('password', 'Password is required.')
                 ->add('email', 'validFormat', [
                     'rule' => 'email',
                     'message' => 'E-mail must be a valid email address.'
@@ -69,7 +71,7 @@ class UsersTable extends Table {
         
         $validator
             ->requirePresence('confirm_password', 'create', 'Password must be required!')
-            ->notEmpty('confirm_password', 'Confirm password must be required!')
+            ->notEmpty('confirm_password', 'Confirm password is required.')
             ->add(
                 'confirm_password',
                 'custom',
