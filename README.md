@@ -6,7 +6,19 @@ The framework source code can be found here: [cakephp/cakephp](https://github.co
 
 ## Installation
 
-Clone with GIT or download zip project folder and extract into the "www" directory on your apache server.
+Install GIT 
+
+Run the following GIT command to clone the project repository:
+
+``` bash
+
+$ cd /path/to/app
+
+$ git clone https://github.com/reggiestain/siyahka-test.git
+
+```
+
+Alternately download zip project folder and extract into the "www" directory on your apache server.
 
 ## Run Migration
 By default Migrations is installed with the default application skeleton.
