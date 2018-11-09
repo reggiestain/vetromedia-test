@@ -1,4 +1,4 @@
-# Vetro Media Practical Test
+# Siyakha Practical Test
 
 This application was developed with [CakePHP](http://cakephp.org) 3.x.
 
