@@ -33,8 +33,8 @@ use Cake\Network\Exception\NotFoundException;
      </div>     
       <section class="login-form">        
         <?php echo $this->Form->create($user,['role'=>'login']);?> 
-        <?php echo $this->Form->input('email',['type'=>'email','label'=>false,'class'=>'form-control input-lg','placeholder'=>'Email','required' => false, 'error' => true]) ?>
-        <?php echo $this->Form->input('password',['type'=>'password','label'=>false,'class'=>'form-control input-lg','placeholder'=>'Password']) ?>                         
+        <?php echo $this->Form->input('email',['type'=>'email','label'=>false,'id'=>'l-email','class'=>'form-control input-lg','placeholder'=>'Email','required' => false, 'error' => true]) ?>
+        <?php echo $this->Form->input('password',['type'=>'password','label'=>false,'id'=>'l-pass','class'=>'form-control input-lg','placeholder'=>'Password']) ?>                         
         <div class="pwstrength_viewport_progress"></div>          
         <button type="submit" class="btn btn-lg btn-success btn-block">Sign In</button>
         <div>
@@ -60,7 +60,7 @@ use Cake\Network\Exception\NotFoundException;
                 <div class="row">
                     <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
                         <label for="firstname" class="form-label">First Name</label>
-                                <?php echo $this->Form->input('firstname',['templates' => ['inputContainer' => '{{content}}'],'type' => 'text','label' => false,'class'=>'form-control','required'=>false, 'error' => true]);?>                               
+                                <?php echo $this->Form->input('first_name',['templates' => ['inputContainer' => '{{content}}'],'type' => 'text','label' => false,'class'=>'form-control','required'=>false, 'error' => true]);?>                               
                     </div>
                     <div class="form-group col-xs-12 col-sm-12 col-md-12 col-lg-6">
                         <label for="surname" class="form-label">Surname</label>
@@ -88,8 +88,8 @@ use Cake\Network\Exception\NotFoundException;
                     </div>    
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" id="bottom-text" class="btn btn-success">Submit</button>  
-                    <button type="button" id="bottom-text" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" id="bottom-text-1" class="btn btn-success">Submit</button>  
+                    <button type="button" id="bottom-text-2" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
                     <?php echo $this->Form->end();?>
@@ -116,7 +116,7 @@ use Cake\Network\Exception\NotFoundException;
                 asyn: false,
                 data: formData,
                 beforeSend: function (xhr) {
-                        xhr.setRequestHeader('X-CSRF-Token', '<?php echo $this->request->params['_csrfToken'];?>');
+                      xhr.setRequestHeader('X-CSRF-Token', $('[name="_csrfToken"]').val());
                 },
                 success: function (data, textStatus, jqXHR)
                 {

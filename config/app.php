@@ -180,13 +180,14 @@ return [
         'default' => [
             'className' => 'Smtp',
             // The following keys are used in SMTP transports
-            'host' => 'smtp.judahtips.org',
-            'port' => 25,
-            'timeout' => 30,
-            'username' => 'info@judahtips.org',
+            'host' => 'mail.siyanontech.co.za',
+            'port' => 587,
+            'timeout' => 60,
+            'username' => 'info@siyanontech.co.za',
             'password' => 'REGinald19',
-           // 'client' => null,
-            //'tls' => null,
+            'client' => null,
+            'tls' => null,
+            'url' => env('EMAIL_TRANSPORT_DEFAULT_URL', null),
         ],
     ],
 

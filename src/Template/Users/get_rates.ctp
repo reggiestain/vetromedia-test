@@ -35,4 +35,3 @@ use Cake\Routing\Router;
         <input type="hidden" name="exchange_amount" value="<?php echo number_format((double)$ZarAmountForeign, 2, '.','');?>">
     </div>
 </div>                        
-<?php echo $this->Form->end();?>

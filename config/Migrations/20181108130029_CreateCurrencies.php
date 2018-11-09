@@ -16,6 +16,7 @@ class CreateCurrencies extends AbstractMigration {
         $currencies->addColumn('name', 'string', ['limit' => 30])
             ->addColumn('code', 'string', ['limit' => 3])
             ->addColumn('rate', 'float')
+            ->addColumn('surcharge', 'float')           
             ->addColumn('created', 'datetime')
             ->addColumn('updated', 'datetime', ['null' => true])
             ->create();

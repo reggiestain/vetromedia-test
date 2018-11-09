@@ -27,10 +27,8 @@ use Cake\ORM\RulesChecker;
 class UsersTable extends Table {
 
     public function initialize(array $config) {
-
         $this->table('users');
-        $this->addBehavior('Timestamp');
-        
+        $this->addBehavior('Timestamp');        
         $this->hasMany('AuditLogs', [
             'className' => 'AuditLogs',
             'joinType' => 'INNER',
@@ -38,11 +36,11 @@ class UsersTable extends Table {
     }
 
     public function validationDefault(Validator $validator) {
-        $validator->notEmpty('firstname', 'First name is required.')
+        $validator->notEmpty('first_name', 'First name is required.')
                 ->notEmpty('surname', 'Surname is required.')                
                 ->notEmpty('mobile', 'Mobile number is required.') 
                 ->notEmpty('email', 'Email is required.')
-                 ->notEmpty('password', 'Password is required.')
+                ->notEmpty('password', 'Password is required.')
                 ->add('email', 'validFormat', [
                     'rule' => 'email',
                     'message' => 'E-mail must be a valid email address.'
@@ -67,8 +65,7 @@ class UsersTable extends Table {
                         'rule' => ['minLength', 6],
                         'message' => 'Password must contain at least 6 character'
                     ],]
-                );
-        
+                );        
         $validator
             ->requirePresence('confirm_password', 'create', 'Password must be required!')
             ->notEmpty('confirm_password', 'Confirm password is required.')
@@ -84,9 +81,14 @@ class UsersTable extends Table {
                         },
                     'message' => 'Sorry, password and confirm password does not matched'
                 ]
-            );   
-       
+            );          
         return $validator;
     }
-
+    
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->isUnique(['username']));
+        $rules->add($rules->isUnique(['email']));
+        return $rules;
+    }
 }

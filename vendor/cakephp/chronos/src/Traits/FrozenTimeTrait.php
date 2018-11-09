@@ -58,9 +58,9 @@ trait FrozenTimeTrait
      * @param int $seconds The hours to set (ignored)
      * @return static A modified Date instance.
      */
-    public function setTime($hours, $minutes, $seconds = 0)
+    public function setTime($hours, $minutes, $seconds = 0, $microseconds = null)
     {
-        return parent::setTime(0, 0, 0);
+        return parent::setTime(0, 0, 0, 0);
     }
 
     /**

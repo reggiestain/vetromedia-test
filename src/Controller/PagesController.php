@@ -17,10 +17,16 @@
 namespace App\Controller;
 
 use Cake\ORM\TableRegistry;
-use Cake\Core\Configure;
+use Cake\I18n\Time;
+use Cake\Event\Event;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Request;
 use Cake\Network\Email\Email;
-use Cake\View\Exception\MissingTemplateException;
+use Cake\Network\Http\Client;
+use Cake\View\Helper\RssHelper;
+use LearnositySdk\Request\Init;
+use LearnositySdk\Request\DataApi;
+use Cake\Mailer\Email as m;
 
 /**
  * Static content controller
@@ -59,20 +65,19 @@ class PagesController extends AppController {
                 $this->Flash->success(__('Welcome ' . $this->Auth->user('email')));
                 return $this->redirect($this->Auth->redirectUrl());
             }
-            $this->Flash->error(__('email / password combination is not valid.'));
+            $this->Flash->error(__('Incorrect email and password.'));
         }
         $this->set('user', $user);
         $this->set('title', 'Login');
     }
 
     public function register() {
-        if ($this->request->is('ajax')) {
-            $user = $this->Users->newEntity();
+        if ($this->request->is('ajax')) {    
+            $user = $this->Users->newEntity();           
             if ($this->request->is('post')) {
-                $user = $this->Users->patchEntity($user, $this->request->data);
+                $userdata = $this->Users->patchEntity($user, $this->request->data);                
                 if (empty($user->errors())) {
-                    var_dump($user);exit();
-                    $this->Users->save($user);
+                    var_dump($this->Users->save($userdata));
                     $status = '200';
                     $message = '';
                 } else {

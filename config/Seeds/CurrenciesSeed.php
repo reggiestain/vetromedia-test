@@ -1,11 +1,12 @@
 <?php
+
 use Migrations\AbstractSeed;
 
 /**
  * Currencies seed.
  */
-class CurrenciesSeed extends AbstractSeed
-{
+class CurrenciesSeed extends AbstractSeed {
+
     /**
      * Run Method.
      *
@@ -16,31 +17,42 @@ class CurrenciesSeed extends AbstractSeed
      *
      * @return void
      */
-    public function run()
-    {
+    public function run() {
         $data = [
+            
             [
-                'name'    => 'British Pound',
-                'rate'    => 0.0527032,
-                'code'    => 'GBP',
+                'name' => 'US Dollars',
+                'rate' => 0.0808279,
+                'code' => 'USD',
+                'surcharge' => 7.5,
                 'created' => date('Y-m-d H:i:s'),
             ],
             [
-                'name'    => 'Euro',
-                'rate'    =>0.0718710,
-                'code'    => 'EUR',
+                'name' => 'British Pound',
+                'rate' => 0.0527032,
+                'code' => 'GBP',
+                'surcharge' => 5,
                 'created' => date('Y-m-d H:i:s'),
             ],
             [
-                'name'    => 'Kenyan Shilling',
-                'code'    => 'KES',
-                'rate'    =>7.81498,
+                'name' => 'Euro',
+                'rate' => 0.0718710,
+                'code' => 'EUR',
+                'surcharge' => 5,
+                'created' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'name' => 'Kenyan Shilling',
+                'code' => 'KES',
+                'rate' => 7.81498,
+                'surcharge' => 2.5,
                 'created' => date('Y-m-d H:i:s'),
             ]
         ];
 
         $currencies = $this->table('currencies');
         $currencies->insert($data)
-              ->save();
+            ->save();
     }
+
 }

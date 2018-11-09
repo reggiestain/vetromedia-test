@@ -18,6 +18,12 @@ namespace App\Controller;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\ORM\TableRegistry;
+use Cake\Core\Configure;
+use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Email\Email;
+use Cake\View\Exception\MissingTemplateException;
+use Cake\Http\Client;
 
 /**
  * Application Controller
@@ -28,7 +34,12 @@ use Cake\Event\Event;
  * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-
+    /**
+     *
+     * @var type 
+     */
+    private $key = '4ec0b8a0f028a05954a7e519704aec22';
+    
     /**
      * Initialization hook method.
      *
@@ -37,7 +48,7 @@ class AppController extends Controller {
      * e.g. `$this->loadComponent('Security');`
      *
      * @return void
-     */
+     */   
     public function initialize() {
         $this->loadComponent('Csrf');
         $this->loadComponent('RequestHandler');
@@ -51,17 +62,17 @@ class AppController extends Controller {
                     'fields' => ['username' => 'email', 'password' => 'password']
                 ]
             ],
-               'loginRedirect' => [
+            'loginRedirect' => [
                 'controller' => 'Users',
                 'action' => 'index'
-                ],
+            ],
             'logoutRedirect' => [
                 'controller' => 'Users',
                 'action' => 'login'
-                ]
+            ]
         ]);
     }
-    
+
     /**
      * 
      * @param Event $event
@@ -69,10 +80,10 @@ class AppController extends Controller {
     public function beforeFilter(\Cake\Event\Event $event) {
         $this->loadModel('AuditLogs');
         $this->loadModel('Users');
-        $this->loadModel('Currency');
+        $this->loadModel('Currencies');
         $this->loadModel('Orders');
     }
-    
+
     /**
      * Before render callback.
      *
@@ -81,28 +92,30 @@ class AppController extends Controller {
      */
     public function beforeRender(Event $event) {
         if (!array_key_exists('_serialize', $this->viewVars) &&
-                in_array($this->response->type(), ['application/json', 'application/xml'])
+            in_array($this->response->type(), ['application/json', 'application/xml'])
         ) {
             $this->set('_serialize', true);
         }
     }
-    
-    protected function fetchRate($fromCurrency,$toCurrency) {
-        $url = 'http://finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s='. $fromCurrency . $toCurrency .'=x';
-        $handle = @fopen($url, 'r');
-         
-        if ($handle) {
-            $result = fgets($handle, 4096);
-            fclose($handle);
-        }
-        if(isset($result)){
-            $allData = explode(',', $result); 
-            $rate = $allData[1];
-            
-        }else{
-            $rate = '';
-        }
+
+    protected function sendmail($id) {
+        $order = $this->Orders->get($id);
+        $DefaultEmail = new Email();
+        $DefaultEmail->viewVars(['id' => $id, 'topay' => $order->amount_to_pay, 'currency' => $order->foreign_currency_purchased, 'amount' => $order->amount_of_foreign_currency]);
+        $DefaultEmail->transport('default');
+        $DefaultEmail->template('orderdetails', 'orderdetails')
+            ->emailFormat('html')
+            ->from(['info@siyanontech.co.za' => 'siyanontech.co.za'])
+            ->to($this->Auth->user('email'))
+            ->subject('Order Details')
+            ->send();
+    }
+
+    protected function fetchRate() {
+        $http = new Client();
+        $response = $http->get('http://data.fixer.io/api/latest?access_key='.$this->key);
         
-      return $rate;
-     }
+        return $response;
+    }
+
 }

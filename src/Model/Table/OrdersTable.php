@@ -32,11 +32,4 @@ class OrdersTable extends Table {
         $this->addBehavior('Timestamp');
     }
 
-    public function validationDefault(Validator $validator) {
-
-        $validator->notEmpty('topay', 'Amount to pay is required.');
-
-        return $validator;
-    }
-
 }

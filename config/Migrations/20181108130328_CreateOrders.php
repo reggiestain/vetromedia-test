@@ -16,7 +16,7 @@ class CreateOrders extends AbstractMigration {
         $orders->addColumn('user_id', 'integer', ['limit' => 11])
             ->addColumn('exchange_rate', 'float', ['null' => false])
             ->addColumn('exchange_amount', 'float', ['null' => false])
-            ->addColumn('foreign_currency_purchased', 'float')
+            ->addColumn('foreign_currency_purchased', 'string', ['limit' => 3,'null' => false])
             ->addColumn('surcharge_percentage', 'float', ['null' => false])
             ->addColumn('amount_to_pay', 'float', ['null' => false])
             ->addColumn('amount_of_surcharge', 'float', ['null' => false])

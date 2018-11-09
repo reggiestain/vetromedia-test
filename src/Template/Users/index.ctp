@@ -56,7 +56,7 @@ use Cake\Network\Exception\NotFoundException;
     <div id="myModal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-md">
             <!-- Modal content-->
-        <?php echo $this->Form->create(null,['id'=>'p-form','url'=>['controller' => 'users', 'action' => 'purchase']]);?>
+        <?php echo $this->Form->create($order,['id'=>'p-form','url'=>['controller' => 'users', 'action' => 'purchase']]);?>
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -97,9 +97,8 @@ use Cake\Network\Exception\NotFoundException;
                 $.ajax({
                     url: "<?php echo \Cake\Routing\Router::Url('/users/get_rates/');?>" + fromcurrency + "/" + tocurrency + "/" + randvalue,
                     type: "POST",
-                    async: false,
                     beforeSend: function (xhr) {
-                        xhr.setRequestHeader('X-CSRF-Token', '<?php echo $this->request->params['_csrfToken'];?>');
+                        xhr.setRequestHeader('X-CSRF-Token', $('[name="_csrfToken"]').val());
                         $('.modal-title').html('');
                         $('.conversion').html("<button class='btn btn-lg btn-default'><span class='glyphicon glyphicon-refresh spinning'></span> Converting...</button>");
                     },
@@ -128,21 +127,20 @@ use Cake\Network\Exception\NotFoundException;
             $.ajax({
                 url: url,
                 type: "POST",
-                asyn: false,
                 data: formData,
                 beforeSend: function (xhr) {
-                        xhr.setRequestHeader('X-CSRF-Token', '<?php echo $this->request->params['_csrfToken'];?>');
+                       xhr.setRequestHeader('X-CSRF-Token', $('[name="_csrfToken"]').val());
                 },        
                 success: function (data, textStatus, jqXHR)
                 {
                     $('.alert-info').html(data);
                     setTimeout(function () {
-                       window.location.reload(1);
+                       window.location.reload();
                     }, 5000);
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     alert(errorThrown);
-                    location.reload();
+                    //location.reload();
                 }
             });
         });

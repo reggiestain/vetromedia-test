@@ -21,6 +21,7 @@ use Cake\Core\Configure;
 use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Email\Email;
 use Cake\View\Exception\MissingTemplateException;
+use Cake\Http\Client;
 
 /**
  * Static content controller
@@ -38,7 +39,6 @@ class UsersController extends AppController {
      * @throws \Cake\Network\Exception\NotFoundException When the view file could not
      *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
      */
-
     public function beforeFilter(\Cake\Event\Event $event) {
         parent::beforeFilter($event);
         $this->Auth->allow(['login', 'register']);
@@ -46,33 +46,52 @@ class UsersController extends AppController {
         $this->set('userEmail', $this->Auth->user('email'));
     }
 
+    /**
+     * Displays login view
+     */
+    public function index() {
+        $users = $this->Users->find();
+        $currencies = $this->Currencies->find('list', ['keyField' => 'code', 'valueField' => 'name']);
+        $order = $this->Orders->newEntity();
+        $this->set('users', $users);
+        $this->set('currencies', $currencies);
+        $this->set('title', 'Currency Conversion');
+        $this->set('order', $order);
+    }
+
+    /**
+     * 
+     * @return type
+     */
     public function login() {
         $user = $this->Users->newEntity();
         if ($this->request->is('post')) {
-            $user = $this->UsersTable->patchEntity($user, $this->request->data);
             $AuthUser = $this->Auth->identify();
             if ($AuthUser) {
                 $this->Auth->setUser($AuthUser);
-                $auditTable = $this->AuditLogsTable->newEntity();
+                $auditTable = $this->AuditLogs->newEntity();
                 $Log = ['user_id' => $this->Auth->user('id'), 'event' => 'Sign In'];
-                $Audit = $this->AuditLogsTable->patchEntity($auditTable, $Log);
-                $this->AuditLogsTable->save($Audit);
+                $Audit = $this->AuditLogs->patchEntity($auditTable, $Log);
+                $this->AuditLogs->save($Audit);
                 $this->Flash->success(__('Welcome ' . $this->Auth->user('email')));
                 return $this->redirect($this->Auth->redirectUrl());
             }
-            $this->Flash->error(__('email / password combination is not valid.'));
+            $this->Flash->error(__('Incorrect email or password'));
         }
         $this->set('user', $user);
         $this->set('title', 'Login');
     }
 
+    /**
+     * Register method
+     */
     public function register() {
         if ($this->request->is('ajax')) {
-            $user = $this->UsersTable->newEntity();
+            $user = $this->Users->newEntity();
             if ($this->request->is('post')) {
-                $user = $this->UsersTable->patchEntity($user, $this->request->data);
+                $user = $this->Users->patchEntity($user, $this->request->data);
                 if (empty($user->errors())) {
-                    $this->UsersTable->save($user);
+                    $this->Users->save($user);
                     $status = '200';
                     $message = '';
                 } else {
@@ -97,20 +116,18 @@ class UsersController extends AppController {
         }
     }
 
-    public function index() {
-        $users = $this->UsersTable->find();
-        $currencies = $this->CurrencyTable->find('list', ['keyField' => 'code', 'valueField' => 'name']);
-        $this->set('users', $users);
-        $this->set('currencies', $currencies);
-        $this->set('title', 'Currency Conversion');
-    }
-
     public function updaterates() {
-        $currs = $this->CurrencyTable->find('all');
-        foreach ($currs as $curr) {
-            $curr->rate = $this->fetchRate($curr->code, 'ZAR');
-            $this->CurrencyTable->save($curr);
+        $currs = $this->Currencies->find('all');
+        $arr = json_decode($this->fetchRate()->body(),true);
+        
+        foreach ($arr['rates'] as $key=>$curr) {
+            //$curr->rate = $this->fetchRate();
+            //$this->Currencies->save($curr);
+            if($key == 'USD'){
+                echo $curr;
+            }
         }
+        exit();
         $this->Flash->success(__('Currency rate has been updated successfully.'));
         return $this->redirect(['action' => 'index']);
     }
@@ -127,15 +144,15 @@ class UsersController extends AppController {
 
     public function getRates($fromCurrency, $toCurrency, $amount) {
         if ($this->request->is('ajax')) {
-            $currs = $this->CurrencyTable->find()->where(['code' => $fromCurrency])->select(['surcharge', 'code', 'rate'])->first();
-            if (!empty($currs)) {
-                $value = (double) $currs->rate * (double) $amount;
-                $surPerc = $currs->surcharge;
-                $surCharge = ($surPerc / 100) * $value;
+            $currs = $this->Currencies->find()->where(['code' => $fromCurrency])->select(['surcharge', 'code', 'rate', 'name'])->first();
+            if ($currs->has('rate')) {
+
+                $value = (double) $amount / $currs->rate;
+                $surCharge = ($currs->surcharge / 100) * $value;
                 $rate = $currs->rate;
-                $amountTopay = $value + $surPerc;
-                $this->set(['surPerc' => $surPerc, 'currency' => $fromCurrency, 'surCharge' => $surCharge, 'amountTopay' => $amountTopay, 'ZarAmountForeign' => $value, 'rate' => $rate, 'surCharge' => $surCharge, 'Foreignamount' => $amount, '_serialize' =>
-                    ['amountTopay','currency', 'AmountForeign', 'rate', 'surPerc', 'amountTopay', 'Foreignamount', 'surCharge', 'ZarAmountForeign']]);
+                $amountTopay = $value + $surCharge;
+                $this->set(['surPerc' => $currs->surcharge, 'currency' => $fromCurrency, 'surCharge' => $surCharge,
+                    'amountTopay' => $amountTopay, 'ZarAmountForeign' => $value, 'rate' => $rate, 'surCharge' => $surCharge, 'Foreignamount' => $amount]);
             } else {
                 $this->render('unmatched');
             }
@@ -143,39 +160,31 @@ class UsersController extends AppController {
         }
     }
 
-    public function sendmail($id) {
-        $order = $this->OrdersTable->get($id);
-        $DefaultEmail = new Email();
-        $DefaultEmail->viewVars(['id' => $id, 'topay' => $order->amount_to_pay, 'currency' => $order->foreign_currency_purchased, 'amount' => $order->amount_of_foreign_currency]);
-        $DefaultEmail->transport('default');
-        $DefaultEmail->template('orderdetails', 'orderdetails')
-                ->emailFormat('html')
-                ->from(['info@judahtips.org' => 'judahtips.org'])
-                ->to($this->Auth->user('email'))
-                ->subject('Order Details')
-                ->send();
-    }
-
+    /**
+     * 
+     * @param type $id
+     */
     private function discount($id) {
-        $order = $this->OrdersTable->get($id);
+        $order = $this->Orders->get($id);
         $discount = 2;
         $newamount = $order->amount_to_pay - ($order->amount_to_pay * ($discount / 100));
         $order->amount_to_pay = $newamount;
-        $this->OrdersTable->save($order);
+        $this->Orders->save($order);
     }
 
+    /**
+     * 
+     */
     public function purchase() {
         if ($this->request->is('ajax')) {
-            $order = $this->OrdersTable->newEntity();
+            $order = $this->Orders->newEntity();
             if ($this->request->is('post')) {
                 $currency = $this->request->data('foreign_currency_purchased');
                 $order->user_id = $this->Auth->user('id');
-                $order = $this->OrdersTable->patchEntity($order, $this->request->data);
-                if ($this->OrdersTable->save($order)) {
-
+                $order = $this->Orders->patchEntity($order, $this->request->data);
+                if ($this->Orders->save($order)) {
                     switch ($currency) {
                         case "USD":
-
                             break;
                         case "GBP":
                             $this->sendmail($order->id);
@@ -184,7 +193,6 @@ class UsersController extends AppController {
                             $this->discount($order->id);
                             break;
                         case "KES":
-
                             break;
                     }
 
@@ -197,11 +205,11 @@ class UsersController extends AppController {
         }
     }
 
+    /**
+     * 
+     * @return type
+     */
     public function logout() {
-        $auditTable = $this->AuditLogsTable->newEntity();
-        $Log = ['user_id' => $this->Auth->user('id'), 'event' => 'Logout'];
-        $Audit = $this->AuditLogsTable->patchEntity($auditTable, $Log);
-        $this->AuditLogsTable->save($Audit);
         return $this->redirect($this->Auth->logout());
     }
 
