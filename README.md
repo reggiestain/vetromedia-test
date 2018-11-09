@@ -7,9 +7,7 @@ The framework source code can be found here: [cakephp/cakephp](https://github.co
 ## Installation
 
 Clone with GIT or download zip project folder and extract into the "www" directory on your apache server.
-2. The application database file is located in "config/schema/siyakha_test_db.sql" directory of the project folder 
-3. Run this sql script on your mysql server to create the "currency_converter" database.
-4. By default Migrations is installed with the default application skeleton
+
 ## Run Migration
 By default Migrations is installed with the default application skeleton.
 
